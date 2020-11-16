@@ -80,12 +80,14 @@ pub fn new_partial(config: &Configuration) -> Result<sc_service::PartialComponen
 }
 
 /// Builds a new service for a full client.
-pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
+pub fn new_full<C: Send + Default + 'static'>(config: Configuration<C, GenesisConfig>) -> Result<impl AbstractService, ServiceError> {
 	let sc_service::PartialComponents {
 		client, backend, mut task_manager, import_queue, keystore, select_chain, transaction_pool,
 		inherent_data_providers,
 		other: (block_import, grandpa_link),
 	} = new_partial(&config)?;
+
+	let dev_seed = config.dev_key_seed.clone();
 
 	let finality_proof_provider =
 		GrandpaFinalityProofProvider::new_for_service(backend.clone(), client.clone());
@@ -170,6 +172,21 @@ pub fn new_full(config: Configuration) -> Result<TaskManager, ServiceError> {
 		// the AURA authoring task is considered essential, i.e. if it
 		// fails we take down the service with it.
 		task_manager.spawn_essential_handle().spawn_blocking("aura", aura);
+
+
+		let service = builder.with_network_protocol(|_| Ok(NodeProtocol::new()))?
+    	.with_finality_proof_provider(|client, backend|
+      		Ok(Arc::new(GrandpaFinalityProofProvider::new(backend, client)) as _)
+    	)?
+		.build()?;
+
+		if let Some(seed) = dev_seed {
+			service.keystore().write().insert_ephemeral_from_seed_by_type::<runtime::offchain_pallet::crypto::Pair>(
+				&seed,
+				runtime::offchain_pallet::KEY_TYPE,
+			)
+			.expect("Dev Seed should always succeed.");
+		}
 	}
 
 	// if the node isn't actively participating in consensus then it doesn't
