@@ -3565,6 +3565,8 @@ dependencies = [
  "hex-literal",
  "pallet-aura",
  "pallet-balances",
+ "pallet-contracts",
+ "pallet-contracts-primitives",
  "pallet-ethereum 0.1.0 (git+https://github.com/PureStake/frontier.git?branch=substrate-v2)",
  "pallet-evm",
  "pallet-grandpa",
@@ -3784,6 +3786,39 @@ dependencies = [
  "frame-system",
  "parity-scale-codec",
  "serde",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-contracts"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "908b373ca40975c48f79a95e8cd134c039ef1120abe4633465c5f690924c79c4"
+dependencies = [
+ "bitflags",
+ "frame-support",
+ "frame-system",
+ "pallet-contracts-primitives",
+ "parity-scale-codec",
+ "parity-wasm",
+ "pwasm-utils",
+ "serde",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-sandbox",
+ "sp-std",
+ "wasmi-validation",
+]
+
+[[package]]
+name = "pallet-contracts-primitives"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e088e1deefd6ae4ceb104666e9c76d699cb975dad8114b4bc7182b07a4745ed9"
+dependencies = [
+ "parity-scale-codec",
  "sp-runtime",
  "sp-std",
 ]
@@ -6687,6 +6722,20 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "sp-sandbox"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "604cd03208c68ebfe14d5a293bff0fef2d612380eba38cb39d606ae977add72e"
+dependencies = [
+ "parity-scale-codec",
+ "sp-core",
+ "sp-io",
+ "sp-std",
+ "sp-wasm-interface",
+ "wasmi",
 ]
 
 [[package]]

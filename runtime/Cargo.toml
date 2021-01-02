@@ -56,6 +56,8 @@ sp-version = { default-features = false, version = '2.0.0' }
 pallet-evm = { default-features = false, version = '2.0.0' }
 pallet-ethereum = { default-features = false, git = 'https://github.com/PureStake/frontier.git', branch = 'substrate-v2' }
 frontier-rpc-primitives = { default-features = false, git = 'https://github.com/PureStake/frontier.git', branch = 'substrate-v2' }
+pallet-contracts = { default-features = false, version = '2.0.0' }
+pallet-contracts-primitives = { default-features = false, version = '2.0.0' }
 
 [features]
 default = ['std']
@@ -99,4 +101,6 @@ std = [
     'pallet-evm/std',
     'pallet-ethereum/std',
     'frontier-rpc-primitives/std',
+    'pallet-contracts/std',
+    'pallet-contracts-primitives/std',
 ]
