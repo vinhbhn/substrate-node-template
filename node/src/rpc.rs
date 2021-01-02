@@ -7,7 +7,10 @@
 
 use std::sync::Arc;
 
-use node_template_runtime::{opaque::Block, AccountId, Balance, Index, TransactionConverter};
+use node_template_runtime::{
+	opaque::Block, AccountId, Balance, BlockNumber, Index, TransactionConverter,
+};
+use pallet_contracts_rpc::{Contracts, ContractsApi};
 use sc_client_api::backend::{AuxStore, Backend, StateBackend, StorageProvider};
 pub use sc_rpc_api::DenyUnsafe;
 use sp_api::ProvideRuntimeApi;
@@ -39,6 +42,7 @@ where
 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error = BlockChainError> + 'static,
 	C: Send + Sync + 'static,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
+	C::Api: pallet_contracts_rpc::ContractsRuntimeApi<Block, AccountId, Balance, BlockNumber>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: BlockBuilder<Block>,
 	C::Api: frontier_rpc_primitives::EthereumRuntimeRPCApi<Block>,
@@ -77,6 +81,8 @@ where
 		TransactionConverter,
 		is_authority,
 	)));
+
+	io.extend_with(ContractsApi::to_delegate(Contracts::new(client.clone())));
 
 	io
 }
